@@ -39,7 +39,6 @@ from app.services.elexon import (
 
 @app.get("/api/debug/elexon")
 async def test_elexon():
-    # A small, recent window to test connectivity and response shape.
     end = datetime.now(timezone.utc)
     start = end - timedelta(hours=6)
 
@@ -52,12 +51,6 @@ async def test_elexon():
             publish_from, publish_to
         )
 
-        # return {
-        #     "actual_count": len(actuals),
-        #     "forecast_count": len(forecasts),
-        #     "actual_sample": actuals[:3],
-        #     "forecast_sample": forecasts[:3],
-        # }
         return {
             "actual_count": len(actuals),
             "forecast_count": len(forecasts),

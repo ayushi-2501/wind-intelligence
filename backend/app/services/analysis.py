@@ -12,12 +12,9 @@ UTC = timezone.utc
 
 
 async def build_january_analysis():
-    # January 2026 delivery period: [Jan 1, Feb 1) UTC.
     delivery_start = pd.Timestamp("2026-01-01T00:00:00Z")
     delivery_end = pd.Timestamp("2026-02-01T00:00:00Z")
 
-    # Wider publication window to include forecasts published
-    # before January delivery and actuals published afterwards.
     publish_from = "2025-12-31T00:00:00Z"
     publish_to = "2026-02-02T00:00:00Z"
 
@@ -34,7 +31,6 @@ async def build_january_analysis():
     if actuals.empty or forecasts.empty:
         raise ValueError("Elexon returned no actual or forecast records.")
 
-    # Parse timestamps and remove records with invalid values.
     for frame, columns in [
         (actuals, ["startTime", "publishTime"]),
         (forecasts, ["startTime", "publishTime"]),
@@ -53,7 +49,6 @@ async def build_january_analysis():
             inplace=True,
         )
 
-    # Keep January delivery intervals only.
     actuals = actuals[
         (actuals["startTime"] >= delivery_start)
         & (actuals["startTime"] < delivery_end)
@@ -65,15 +60,11 @@ async def build_january_analysis():
         & (forecasts["startTime"] < delivery_end)
     ].copy()
 
-    # If actual records have revisions, retain the latest published
-    # value for each half-hour delivery interval.
     actuals = (
         actuals.sort_values("publishTime")
         .drop_duplicates("startTime", keep="last")
     )
 
-    # Aggregate half-hourly actuals to hourly means.
-    # Forecast values are hourly in the sample observed so far.
     actuals["hour"] = actuals["startTime"].dt.floor("h")
 
     actual_hourly = (
@@ -82,13 +73,10 @@ async def build_january_analysis():
         .reset_index()
     )
 
-    # A complete hourly actual should contain two half-hour periods.
     actual_hourly = actual_hourly[
         actual_hourly["actual_intervals"] == 2
     ].copy()
 
-    # For each delivery hour, the assumed decision cutoff is
-    # 10:00 UTC on the previous day.
     forecasts["cutoff"] = (
         forecasts["startTime"].dt.normalize()
         - pd.Timedelta(days=1)
@@ -99,7 +87,6 @@ async def build_january_analysis():
         forecasts["publishTime"] <= forecasts["cutoff"]
     ].copy()
 
-    # Select the latest forecast available by that hour's cutoff.
     selected = (
         eligible.sort_values("publishTime")
         .drop_duplicates("startTime", keep="last")

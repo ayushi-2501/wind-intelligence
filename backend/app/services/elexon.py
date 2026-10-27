@@ -26,8 +26,6 @@ async def fetch_dataset(
         response.raise_for_status()
         data = response.json()
 
-    # Stream endpoints generally return a JSON array.
-    # Handle an object containing "data" as well.
     if isinstance(data, dict):
         data = data.get("data", [])
 
@@ -37,22 +35,6 @@ async def fetch_dataset(
     return data
 
 
-# async def fetch_wind_actuals(publish_from: str, publish_to: str):
-#     records = await fetch_dataset(
-#         "FUELHH",
-#         publish_from,
-#         publish_to,
-#         extra_params={"fuelType": "WIND"},
-#     )
-
-#     return [
-#         {
-#             "startTime": row.get("startTime"),
-#             "generation": row.get("generation"),
-#         }
-#         for row in records
-#         if row.get("fuelType") == "WIND"
-#     ]
 async def fetch_wind_actuals(publish_from: str, publish_to: str):
     records = await fetch_dataset(
         "FUELHH",
