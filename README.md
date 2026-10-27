@@ -17,6 +17,18 @@ The dashboard focuses on January 2026 and presents forecast performance through 
 - **Data quality checks:** Track source records, complete hourly actuals, and matched forecast/actual observations.
 - **Documented evaluation assumptions:** Make the forecast selection cutoff and hourly aggregation method explicit.
 
+## Live Demo
+
+- **Live Dashboard:** https://wind-intelligence-khaki.vercel.app
+- **Backend API:** https://wind-intelligence-qq3c.onrender.com
+- **API Health Check:** https://wind-intelligence-qq3c.onrender.com/api/health
+- **Interactive API Documentation:** https://wind-intelligence-qq3c.onrender.com/docs
+- **GitHub Repository:** https://github.com/ayushi-2501/wind-intelligence
+
+## Demo
+
+The live dashboard compares day-ahead wind generation forecasts with actual wind generation across January 2026. It includes forecast accuracy metrics, a time-series comparison, and a table highlighting the hours with the largest absolute forecast errors.
+
 ## Tech Stack
 
 **Frontend**
